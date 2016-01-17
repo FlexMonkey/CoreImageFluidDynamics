@@ -24,7 +24,7 @@ class AdvectionFilter: CIFilter
         "   vec2 v = (sample(velocity, samplerCoord(velocity)).xy - 0.5) * -2.0;" +
 
         "   highp vec2 advectedVelocity = sample(velocity, samplerTransform(velocity, d + v)).xy;" +
-   
+            
         "   return vec4(advectedVelocity.x, advectedVelocity.y, 0.0, 1.0);" +
         "}"
     )
@@ -70,7 +70,7 @@ class DivergenceFilter: CIFilter
         "   x0 = (x0 - 0.5) * 2.0; " +
         "   x1 = (x1 - 0.5) * 2.0; " +
             
-        "   highp float diverge = ((x1-x0) + (y1-y0)) * 0.5; " +
+        "   float diverge = ((x1-x0) + (y1-y0)) * 0.5; " +
         
         "   return vec4(diverge, 0.0, 0.0, 1.0); \n" +
         "}"
@@ -108,14 +108,14 @@ class JacobiFilter: CIFilter
         "{  \n" +
         "   vec2 d = destCoord(); \n" +
         
-        "   float y0 = sample(pressure, samplerTransform(pressure, d + vec2(0.0,-1.0))).x; \n" +
-        "   float y1 = sample(pressure, samplerTransform(pressure, d + vec2(0.0,1.0))).x; \n" +
-        "   float x0 = sample(pressure, samplerTransform(pressure, d + vec2(-1.0,0.0))).x; \n" +
-        "   float x1 = sample(pressure, samplerTransform(pressure, d + vec2(1.0,0.0))).x; \n" +
+        "   highp float y0 = sample(pressure, samplerTransform(pressure, d + vec2(0.0,-1.0))).x; \n" +
+        "   highp float y1 = sample(pressure, samplerTransform(pressure, d + vec2(0.0,1.0))).x; \n" +
+        "   highp float x0 = sample(pressure, samplerTransform(pressure, d + vec2(-1.0,0.0))).x; \n" +
+        "   highp float x1 = sample(pressure, samplerTransform(pressure, d + vec2(1.0,0.0))).x; \n" +
         
-        "   float diverge = sample(divergence, samplerCoord(divergence)).x; \n" +
+        "   highp float diverge = sample(divergence, samplerCoord(divergence)).x; \n" +
             
-        "   highp float relaxed = (x0 + x1 + y0 + y1 + -1.0 * diverge) * 0.25; \n" +
+        "   highp float relaxed = (x0 + x1 + y0 + y1 + (-1.0 * diverge)) * 0.25175; \n" +
     
         "   return vec4(relaxed, 0.0, 0.0, 1.0); \n" +  // alpha: -1.0  beta: 0.25
         "}"
@@ -154,10 +154,10 @@ class SubtractPressureGradientFilter: CIFilter
         "{  \n" +
         "   vec2 d = destCoord(); \n" +
         
-        "   float y0 = sample(pressure, samplerTransform(pressure, d + vec2(0.0,-1.0))).x; \n" +
-        "   float y1 = sample(pressure, samplerTransform(pressure, d + vec2(0.0,1.0))).x; \n" +
-        "   float x0 = sample(pressure, samplerTransform(pressure, d + vec2(-1.0,0.0))).x; \n" +
-        "   float x1 = sample(pressure, samplerTransform(pressure, d + vec2(1.0,0.0))).x; \n" +
+        "   highp float y0 = sample(pressure, samplerTransform(pressure, d + vec2(0.0,-1.0))).x; \n" +
+        "   highp float y1 = sample(pressure, samplerTransform(pressure, d + vec2(0.0,1.0))).x; \n" +
+        "   highp float x0 = sample(pressure, samplerTransform(pressure, d + vec2(-1.0,0.0))).x; \n" +
+        "   highp float x1 = sample(pressure, samplerTransform(pressure, d + vec2(1.0,0.0))).x; \n" +
             
         "   highp vec2 v = sample(velocity, samplerCoord(velocity)).xy; \n" +
         "   v = (v - 0.5) * 2.0; " +

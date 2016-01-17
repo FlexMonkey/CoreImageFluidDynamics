@@ -88,14 +88,14 @@ class ViewController: UIViewController
             y: 640 - touch.previousLocationInView(imageView).y)
         
         let pressureImage = CIImage(color: CIColor(red: 1, green: 0, blue: 0))
-            .imageByCroppingToRect(CGRect(origin: locationInView.offset(30), size: CGSize(width: 60, height: 60)))
-            .imageByApplyingFilter("CIGaussianBlur", withInputParameters: [kCIInputRadiusKey: 15])
-        
-        let directionX = ((max(min(locationInView.x - previousLocationInView.x, 5), -5)) / 10) + 0.5
-        let directionY = ((max(min(locationInView.y - previousLocationInView.y, 5), -5)) / 10) + 0.5
-        
-        let directionimage = CIImage(color: CIColor(red: directionX, green: directionY, blue: 0))
             .imageByCroppingToRect(CGRect(origin: locationInView.offset(20), size: CGSize(width: 40, height: 40)))
+            .imageByApplyingFilter("CIGaussianBlur", withInputParameters: [kCIInputRadiusKey: 10])
+        
+        let directionX = ((max(min(locationInView.x - previousLocationInView.x, 10), -10)) / 20) + 0.5
+        let directionY = ((max(min(locationInView.y - previousLocationInView.y, 10), -10)) / 20) + 0.5
+   
+        let directionimage = CIImage(color: CIColor(red: directionX, green: directionY, blue: 0))
+            .imageByCroppingToRect(CGRect(origin: locationInView.offset(15), size: CGSize(width: 30, height: 30)))
             .imageByApplyingFilter("CIGaussianBlur", withInputParameters: [kCIInputRadiusKey: 5])
         
         velocityAccumulator.setImage(directionimage.imageByCompositingOverImage(velocityAccumulator.image()))
@@ -122,11 +122,11 @@ extension ViewController: GLKViewDelegate
         advectionFilter.inputVelocity = velocityAccumulator.image()
         
         divergenceFilter.inputVelocity = advectionFilter.outputImage!
-        let divergence = divergenceFilter.outputImage!
+
+        jacobiFilter.inputDivergence = divergenceFilter.outputImage!
         
-        for _ in 0 ... 2
+        for _ in 0 ... 3
         {
-            jacobiFilter.inputDivergence = divergence
             jacobiFilter.inputPressure = pressureAccumulator.image()
             
             pressureAccumulator.setImage(jacobiFilter.outputImage)
