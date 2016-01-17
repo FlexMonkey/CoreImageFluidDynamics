@@ -12,6 +12,7 @@
 		3E0F65211C4A0FB500852420 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E0F651F1C4A0FB500852420 /* Main.storyboard */; };
 		3E0F65231C4A0FB500852420 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E0F65221C4A0FB500852420 /* Assets.xcassets */; };
 		3E0F65261C4A0FB500852420 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E0F65241C4A0FB500852420 /* LaunchScreen.storyboard */; };
+		3E0F652E1C4A0FD600852420 /* Filters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0F652D1C4A0FD600852420 /* Filters.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		3E0F65221C4A0FB500852420 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3E0F65251C4A0FB500852420 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3E0F65271C4A0FB500852420 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3E0F652D1C4A0FD600852420 /* Filters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Filters.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,7 @@
 		3E0F651A1C4A0FB500852420 /* CoreImageFluidDynamics */ = {
 			isa = PBXGroup;
 			children = (
+				3E0F652F1C4A0FE100852420 /* CFD */,
 				3E0F651B1C4A0FB500852420 /* AppDelegate.swift */,
 				3E0F651D1C4A0FB500852420 /* ViewController.swift */,
 				3E0F651F1C4A0FB500852420 /* Main.storyboard */,
@@ -62,6 +65,14 @@
 				3E0F65271C4A0FB500852420 /* Info.plist */,
 			);
 			path = CoreImageFluidDynamics;
+			sourceTree = "<group>";
+		};
+		3E0F652F1C4A0FE100852420 /* CFD */ = {
+			isa = PBXGroup;
+			children = (
+				3E0F652D1C4A0FD600852420 /* Filters.swift */,
+			);
+			name = CFD;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -136,6 +147,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3E0F651E1C4A0FB500852420 /* ViewController.swift in Sources */,
+				3E0F652E1C4A0FD600852420 /* Filters.swift in Sources */,
 				3E0F651C1C4A0FB500852420 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
