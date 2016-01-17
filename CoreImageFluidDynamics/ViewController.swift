@@ -91,7 +91,7 @@ class ViewController: UIViewController {
             
             let pressureImage = CIImage(color: CIColor(red: 1, green: 0, blue: 0))
                 .imageByCroppingToRect(CGRect(origin: locationInView.offset(30), size: CGSize(width: 60, height: 60)))
-                .imageByApplyingFilter("CIGaussianBlur", withInputParameters: [kCIInputRadiusKey: 20])
+                .imageByApplyingFilter("CIGaussianBlur", withInputParameters: [kCIInputRadiusKey: 15])
             
             let directionX = ((max(min(locationInView.x - previousLocationInView.x, 5), -5)) / 10) + 0.5
             let directionY = ((max(min(locationInView.y - previousLocationInView.y, 5), -5)) / 10) + 0.5
@@ -127,7 +127,7 @@ extension ViewController: GLKViewDelegate
         divergenceFilter.inputVelocity = advectionFilter.outputImage!
         let divergence = divergenceFilter.outputImage!
         
-        for _ in 0 ... 4
+        for _ in 0 ... 2
         {
             jacobiFilter.inputDivergence = divergence
             jacobiFilter.inputPressure = pressureAccumulator.image()
@@ -140,9 +140,10 @@ extension ViewController: GLKViewDelegate
         
         velocityAccumulator.setImage(subtractPressureGradientFilter.outputImage!)
         
-//        velocityAccumulator.setImage(advectionFilter.outputImage!)
+        let finalImage = pressureAccumulator.image()
+            .imageByApplyingFilter("CIMaximumComponent", withInputParameters: nil)
    
-        ciContext.drawImage(pressureAccumulator.image(),
+        ciContext.drawImage(finalImage,
             inRect: CGRect(x: 0, y: 0,
                 width: imageView.drawableWidth,
                 height: imageView.drawableHeight),
