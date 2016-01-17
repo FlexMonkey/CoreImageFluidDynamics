@@ -5,16 +5,17 @@
 //  Created by Simon Gladman on 16/01/2016.
 //  Copyright © 2016 Simon Gladman. All rights reserved.
 //
+//  Based on https://github.com/jwagner/fluidwebgl
 
 import UIKit
 import GLKit
 
-class ViewController: UIViewController {
-    
-    let rect640x640 = CGRect(x: 0, y: 0, width: 640, height: 640)
-    
-    let velocityAccumulator = CIImageAccumulator(extent: CGRect(x: 0, y: 0, width: 640, height: 640), format: kCIFormatARGB8)
-    let pressureAccumulator = CIImageAccumulator(extent: CGRect(x: 0, y: 0, width: 640, height: 640), format: kCIFormatARGB8)
+let rect640x640 = CGRect(x: 0, y: 0, width: 640, height: 640)
+
+class ViewController: UIViewController
+{
+    let velocityAccumulator = CIImageAccumulator(extent: rect640x640, format: kCIFormatARGB8)
+    let pressureAccumulator = CIImageAccumulator(extent: rect640x640, format: kCIFormatARGB8)
     
     let advectionFilter = AdvectionFilter()
     let divergenceFilter = DivergenceFilter()
@@ -37,7 +38,7 @@ class ViewController: UIViewController {
         imageView.delegate = self
         
         return imageView
-        }()
+    }()
     
     let eaglContext = EAGLContext(API: .OpenGLES2)
     
@@ -47,7 +48,7 @@ class ViewController: UIViewController {
         
         return CIContext(EAGLContext: self.eaglContext,
             options: [kCIContextWorkingColorSpace: NSNull()])
-        }()
+    }()
     
     override func viewDidLoad()
     {
@@ -55,17 +56,10 @@ class ViewController: UIViewController {
         
         view.addSubview(imageView)
         
-        setInitialImage()
+        velocityAccumulator.setImage(CIImage(color: CIColor(red: 0.5, green: 0.5, blue: 0.0)))
         
         let displayLink = CADisplayLink(target: self, selector: Selector("step"))
         displayLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSDefaultRunLoopMode)
-    }
-    
-    func setInitialImage()
-    {
-        let black = CIImage(color: CIColor(red: 0.5, green: 0.5, blue: 0.0))
-    
-        velocityAccumulator.setImage(black)
     }
     
     func step()
@@ -75,35 +69,38 @@ class ViewController: UIViewController {
     
     override func viewDidLayoutSubviews()
     {
-        imageView.frame = CGRect(origin: CGPoint(x: view.frame.width / 2 - rect640x640.width / 2, y: view.frame.height / 2 - rect640x640.height / 2),
+        imageView.frame = CGRect(origin: CGPoint(x: view.frame.midX - rect640x640.midX,
+                y: view.frame.midY - rect640x640.midY),
             size: CGSize(width: rect640x640.width, height: rect640x640.height))
     }
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?)
     {
-        if let touch = touches.first
+        guard let touch = touches.first else
         {
-            let locationInView = CGPoint(x: touch.locationInView(imageView).x,
-                y: 640 - touch.locationInView(imageView).y)
-            
-            let previousLocationInView = CGPoint(x: touch.previousLocationInView(imageView).x,
-                y: 640 - touch.previousLocationInView(imageView).y)
-            
-            let pressureImage = CIImage(color: CIColor(red: 1, green: 0, blue: 0))
-                .imageByCroppingToRect(CGRect(origin: locationInView.offset(30), size: CGSize(width: 60, height: 60)))
-                .imageByApplyingFilter("CIGaussianBlur", withInputParameters: [kCIInputRadiusKey: 15])
-            
-            let directionX = ((max(min(locationInView.x - previousLocationInView.x, 5), -5)) / 10) + 0.5
-            let directionY = ((max(min(locationInView.y - previousLocationInView.y, 5), -5)) / 10) + 0.5
-            
-            let directionimage = CIImage(color: CIColor(red: directionX, green: directionY, blue: 0))
-                .imageByCroppingToRect(CGRect(origin: locationInView.offset(20), size: CGSize(width: 40, height: 40)))
-                .imageByApplyingFilter("CIGaussianBlur", withInputParameters: [kCIInputRadiusKey: 5])
-            
-            velocityAccumulator.setImage(directionimage.imageByCompositingOverImage(velocityAccumulator.image()))
-            
-            pressureAccumulator.setImage(pressureImage.imageByCompositingOverImage(pressureAccumulator.image()))
+            return
         }
+  
+        let locationInView = CGPoint(x: touch.locationInView(imageView).x,
+            y: 640 - touch.locationInView(imageView).y)
+        
+        let previousLocationInView = CGPoint(x: touch.previousLocationInView(imageView).x,
+            y: 640 - touch.previousLocationInView(imageView).y)
+        
+        let pressureImage = CIImage(color: CIColor(red: 1, green: 0, blue: 0))
+            .imageByCroppingToRect(CGRect(origin: locationInView.offset(30), size: CGSize(width: 60, height: 60)))
+            .imageByApplyingFilter("CIGaussianBlur", withInputParameters: [kCIInputRadiusKey: 15])
+        
+        let directionX = ((max(min(locationInView.x - previousLocationInView.x, 5), -5)) / 10) + 0.5
+        let directionY = ((max(min(locationInView.y - previousLocationInView.y, 5), -5)) / 10) + 0.5
+        
+        let directionimage = CIImage(color: CIColor(red: directionX, green: directionY, blue: 0))
+            .imageByCroppingToRect(CGRect(origin: locationInView.offset(20), size: CGSize(width: 40, height: 40)))
+            .imageByApplyingFilter("CIGaussianBlur", withInputParameters: [kCIInputRadiusKey: 5])
+        
+        velocityAccumulator.setImage(directionimage.imageByCompositingOverImage(velocityAccumulator.image()))
+        
+        pressureAccumulator.setImage(pressureImage.imageByCompositingOverImage(pressureAccumulator.image()))
     }
     
 }
