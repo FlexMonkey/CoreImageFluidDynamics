@@ -80,27 +80,44 @@ class ViewController: UIViewController
         {
             return
         }
-  
-        let locationInView = CGPoint(x: touch.locationInView(imageView).x,
+
+        let locationInView = CGPoint(
+            x: touch.locationInView(imageView).x,
             y: 640 - touch.locationInView(imageView).y)
-        
-        let previousLocationInView = CGPoint(x: touch.previousLocationInView(imageView).x,
+
+        let previousLocationInView = CGPoint(
+            x: touch.previousLocationInView(imageView).x,
             y: 640 - touch.previousLocationInView(imageView).y)
-        
-        let pressureImage = CIImage(color: CIColor(red: 1, green: 0, blue: 0))
-            .imageByCroppingToRect(CGRect(origin: locationInView.offset(20), size: CGSize(width: 40, height: 40)))
-            .imageByApplyingFilter("CIGaussianBlur", withInputParameters: [kCIInputRadiusKey: 10])
-        
-        let directionX = ((max(min(locationInView.x - previousLocationInView.x, 10), -10)) / 20) + 0.5
-        let directionY = ((max(min(locationInView.y - previousLocationInView.y, 10), -10)) / 20) + 0.5
-   
-        let directionimage = CIImage(color: CIColor(red: directionX, green: directionY, blue: 0))
-            .imageByCroppingToRect(CGRect(origin: locationInView.offset(15), size: CGSize(width: 30, height: 30)))
-            .imageByApplyingFilter("CIGaussianBlur", withInputParameters: [kCIInputRadiusKey: 5])
-        
-        velocityAccumulator.setImage(directionimage.imageByCompositingOverImage(velocityAccumulator.image()))
-        
-        pressureAccumulator.setImage(pressureImage.imageByCompositingOverImage(pressureAccumulator.image()))
+
+        let red = CIColor(red: 1, green: 0, blue: 0)
+                
+        let pressureImage = CIImage(color: red)
+            .imageByCroppingToRect(CGRect(
+                origin: locationInView.offset(20),
+                size: CGSize(width: 40, height: 40)))
+            .imageByApplyingFilter("CIGaussianBlur",
+                withInputParameters: [kCIInputRadiusKey: 10])
+
+        let deltaX = locationInView.x - previousLocationInView.x
+        let deltaY = locationInView.y - previousLocationInView.y
+                
+        let directionX = ((max(min(deltaX, 10), -10)) / 20) + 0.5
+        let directionY = ((max(min(deltaY, 10), -10)) / 20) + 0.5
+
+        let directionColor = CIColor(red: directionX, green: directionY, blue: 0)
+                
+        let directionImage = CIImage(color: directionColor)
+            .imageByCroppingToRect(CGRect(
+                origin: locationInView.offset(15),
+                size: CGSize(width: 30, height: 30)))
+            .imageByApplyingFilter("CIGaussianBlur",
+                withInputParameters: [kCIInputRadiusKey: 5])
+
+        velocityAccumulator.setImage(directionImage
+            .imageByCompositingOverImage(velocityAccumulator.image()))
+
+        pressureAccumulator.setImage(pressureImage
+            .imageByCompositingOverImage(pressureAccumulator.image()))
     }
     
 }
