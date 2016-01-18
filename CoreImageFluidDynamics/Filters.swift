@@ -23,7 +23,7 @@ class AdvectionFilter: CIFilter
             
         "   vec2 v = (sample(velocity, samplerCoord(velocity)).xy - 0.5) * -2.0;" +
 
-        "   highp vec2 advectedVelocity = sample(velocity, samplerTransform(velocity, d + v)).xy;" +
+        "   vec2 advectedVelocity = sample(velocity, samplerTransform(velocity, d + v)).xy;" +
             
         "   return vec4(advectedVelocity.x, advectedVelocity.y, 0.0, 1.0);" +
         "}"
@@ -60,10 +60,10 @@ class DivergenceFilter: CIFilter
         "{  \n" +
         "   vec2 d = destCoord(); \n" +
         
-        "   highp float y0 = sample(velocity, samplerTransform(velocity, d + vec2(0.0,-1.0))).y; \n" +
-        "   highp float y1 = sample(velocity, samplerTransform(velocity, d + vec2(0.0,1.0))).y; \n" +
-        "   highp float x0 = sample(velocity, samplerTransform(velocity, d + vec2(-1.0,0.0))).x; \n" +
-        "   highp float x1 = sample(velocity, samplerTransform(velocity, d + vec2(1.0,0.0))).x; \n" +
+        "   float y0 = sample(velocity, samplerTransform(velocity, d + vec2(0.0,-1.0))).y; \n" +
+        "   float y1 = sample(velocity, samplerTransform(velocity, d + vec2(0.0,1.0))).y; \n" +
+        "   float x0 = sample(velocity, samplerTransform(velocity, d + vec2(-1.0,0.0))).x; \n" +
+        "   float x1 = sample(velocity, samplerTransform(velocity, d + vec2(1.0,0.0))).x; \n" +
             
         "   y0 = (y0 - 0.5) * 2.0; " +
         "   y1 = (y1 - 0.5) * 2.0; " +
@@ -108,14 +108,14 @@ class JacobiFilter: CIFilter
         "{  \n" +
         "   vec2 d = destCoord(); \n" +
         
-        "   highp float y0 = sample(pressure, samplerTransform(pressure, d + vec2(0.0,-1.0))).x; \n" +
-        "   highp float y1 = sample(pressure, samplerTransform(pressure, d + vec2(0.0,1.0))).x; \n" +
-        "   highp float x0 = sample(pressure, samplerTransform(pressure, d + vec2(-1.0,0.0))).x; \n" +
-        "   highp float x1 = sample(pressure, samplerTransform(pressure, d + vec2(1.0,0.0))).x; \n" +
+        "   float y0 = sample(pressure, samplerTransform(pressure, d + vec2(0.0,-1.0))).x; \n" +
+        "   float y1 = sample(pressure, samplerTransform(pressure, d + vec2(0.0,1.0))).x; \n" +
+        "   float x0 = sample(pressure, samplerTransform(pressure, d + vec2(-1.0,0.0))).x; \n" +
+        "   float x1 = sample(pressure, samplerTransform(pressure, d + vec2(1.0,0.0))).x; \n" +
         
-        "   highp float diverge = sample(divergence, samplerCoord(divergence)).x; \n" +
+        "   float diverge = sample(divergence, samplerCoord(divergence)).x; \n" +
             
-        "   highp float relaxed = (x0 + x1 + y0 + y1 + (-1.0 * diverge)) * 0.25175; \n" +
+        "   float relaxed = (x0 + x1 + y0 + y1 + (-1.0 * diverge)) * 0.25175; \n" +
     
         "   return vec4(relaxed, 0.0, 0.0, 1.0); \n" +  // alpha: -1.0  beta: 0.25
         "}"
@@ -154,15 +154,15 @@ class SubtractPressureGradientFilter: CIFilter
         "{  \n" +
         "   vec2 d = destCoord(); \n" +
         
-        "   highp float y0 = sample(pressure, samplerTransform(pressure, d + vec2(0.0,-1.0))).x; \n" +
-        "   highp float y1 = sample(pressure, samplerTransform(pressure, d + vec2(0.0,1.0))).x; \n" +
-        "   highp float x0 = sample(pressure, samplerTransform(pressure, d + vec2(-1.0,0.0))).x; \n" +
-        "   highp float x1 = sample(pressure, samplerTransform(pressure, d + vec2(1.0,0.0))).x; \n" +
+        "   float y0 = sample(pressure, samplerTransform(pressure, d + vec2(0.0,-1.0))).x; \n" +
+        "   float y1 = sample(pressure, samplerTransform(pressure, d + vec2(0.0,1.0))).x; \n" +
+        "   float x0 = sample(pressure, samplerTransform(pressure, d + vec2(-1.0,0.0))).x; \n" +
+        "   float x1 = sample(pressure, samplerTransform(pressure, d + vec2(1.0,0.0))).x; \n" +
             
-        "   highp vec2 v = sample(velocity, samplerCoord(velocity)).xy; \n" +
+        "   vec2 v = sample(velocity, samplerCoord(velocity)).xy; \n" +
         "   v = (v - 0.5) * 2.0; " +
         
-        "   highp vec2 result = v - (vec2(x1 - x0, y1 - y0) * 0.5);" +
+        "   vec2 result = v - (vec2(x1 - x0, y1 - y0) * 0.5);" +
             
         "   return vec4((result + 1.0) / 2.0, 0.0, 1.0); \n" +
         "}"
